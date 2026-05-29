@@ -1,0 +1,18 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "type": "command",
+        "command": "python scripts/tddctl.py begin",
+        "timeout": 30
+      }
+    ],
+    "SubagentStop": [
+      {
+        "type": "command",
+        "command": "python scripts/tddctl.py subagent",
+        "timeout": 60
+      }
+    ]
+  }
+}
