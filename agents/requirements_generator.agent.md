@@ -1,7 +1,7 @@
 ---
 name: requirements-agent
 description: Generate or revise requirements.md for the active spec.
-tools: ['edit', 'search/codebase']
+tools: ['edit', 'search']
 ---
 
 # Requirements Agent

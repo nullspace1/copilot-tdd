@@ -24,7 +24,7 @@ Result: TypeAlias = Literal[
 
 AGENTS: list[AgentType] = ["requirements", "test", "implementation", "review", "explanation"]
 CONFIG_PATH = Path(".tdd-config.json")
-PROMPT_SPEC_RE = re.compile(r"@tdd-orchestrator\s+([a-zA-Z0-9-]+)")
+PROMPT_SPEC_RE = re.compile(r"tdd-+([a-zA-Z0-9-]+)")
 
 
 class Metadata:
@@ -111,6 +111,29 @@ class History:
         for stage, content in agent_files.items():
             Text.write(revision_folder / f"{stage}.md", content)
 
+    def recover_revisions(self) -> list[dict[AgentType, str]]:
+        revisions = []
+
+        for revision_folder in sorted(self.history_folder.glob("revision-*"), key=os.path.getmtime, reverse=True):
+            revision_data: dict[AgentType, str] = {}
+
+            for stage in AGENTS:
+                stage_file = revision_folder / f"{stage}.md"
+
+                if stage_file.exists():
+                    revision_data[stage] = Text.read(stage_file)
+
+            revisions.append(revision_data)
+
+        return revisions
+    
+    def write_revisions(self, list_of_revisions: list[dict[AgentType, str]]) -> None:
+        for index, revision in enumerate(list_of_revisions):
+            revision_folder = self.history_folder / f"revision-{index + 1}"
+            revision_folder.mkdir(parents=True, exist_ok=True)
+
+            for stage, content in revision.items():
+                Text.write(revision_folder / f"{stage}.md", content)
 
 class Feedback:
     def __init__(self, spec: str) -> None:
@@ -120,8 +143,16 @@ class Feedback:
         if not self.feedback_file.exists():
             Text.write(self.feedback_file, "")
 
+    def clear(self) -> None:
+        Text.write(self.feedback_file, "")
+
+    def write(self, content: str) -> None:
+        Text.write(self.feedback_file, content)
 
 class Git:
+
+    log_file: Path = Path(".tdd-git-log.txt")
+
     def run(self, *args: str) -> str:
         result = subprocess.run(
             ["git", *args],
@@ -130,6 +161,13 @@ class Git:
             stderr=subprocess.PIPE,
             check=False,
         )
+
+        with self.log_file.open("a", encoding="utf-8") as log:
+            log.write(f"$ git {' '.join(args)}\n")
+            log.write(f"Return code: {result.returncode}\n")
+            log.write(f"Stdout:\n{result.stdout}\n")
+            log.write(f"Stderr:\n{result.stderr}\n")
+            log.write("-" * 80 + "\n")
 
         if result.returncode != 0:
             raise RuntimeError(result.stderr.strip())
@@ -183,7 +221,7 @@ class AgentDataManager:
         return self.get_stage() == "requirements" and self.get_result() == "start"
 
     def begin(self) -> None:
-        if self.git.get_branch() != "main":
+        if self.git.get_branch() != "master":
             raise RuntimeError("Not on main branch.")
 
         if not self.git.no_uncommitted_changes():
@@ -214,7 +252,9 @@ class AgentDataManager:
             self.status.update_stage(self.agents[index + 1])
             self.status.update_result("progress")
 
-    def fetch_data(self, up_to_stage: AgentType) -> tuple[dict[AgentType, str], dict[AgentType, str], str, StatusData]:
+        self.feedback.clear()  # Touch feedback file to ensure it's up to date in the filesystem.
+
+    def fetch_data(self, up_to_stage: AgentType) -> tuple[dict[AgentType, str], dict[AgentType, str],StatusData]:
         agent_files_to_save: dict[AgentType, str] = {}
         agent_files_to_discard: dict[AgentType, str] = {}
 
@@ -224,17 +264,30 @@ class AgentDataManager:
             agent_files_to_save[stage] = read_optional_text(Path("specs") / self.spec / f"{stage}.md")
 
         for stage in self.agents[split_index + 1 :]:
-            agent_files_to_discard[stage] = read_optional_text(Path("specs") / self.spec / f"{stage}.md")
+            text = read_optional_text(Path("specs") / self.spec / f"{stage}.md")
+            if text != "":
+                agent_files_to_discard[stage] = read_optional_text(Path("specs") / self.spec / f"{stage}.md")
 
-        feedback = Text.read(self.feedback.feedback_file)
         status = self.status.read()
 
-        return agent_files_to_discard, agent_files_to_save, feedback, status
+        return agent_files_to_discard, agent_files_to_save, status
+
+    def get_last_written_stage(self, discard_agent_docs : dict[AgentType, str]) -> AgentType:
+        last_written_stage = "requirements"
+
+        for stage in self.agents:
+            if stage in discard_agent_docs.keys():
+                last_written_stage = stage
+            else:
+                break
+
+        return cast(AgentType, last_written_stage)
 
     def revert_to_stage(self, stage: AgentType) -> None:
-        discard_agent_docs, saved_agent_docs, feedback, status = self.fetch_data(stage)
-
-        revision_branch = f"feat/{self.spec}/revision/{status.revision}"
+        discard_agent_docs, saved_agent_docs, status = self.fetch_data(stage)
+        last_written_stage_text = Text.read(f"specs/{self.spec}/{self.get_last_written_stage(discard_agent_docs)}.md")
+        history_folder_contents : list[dict[AgentType, str]] = self.history.recover_revisions()
+        revision_branch = f"feat/{self.spec}-revision-{status.revision}"
         self.git.create_branch(revision_branch)
         self.git.commit(f"tdd({self.spec}): preserve revision {status.revision}")
 
@@ -247,7 +300,8 @@ class AgentDataManager:
         for saved_stage, content in saved_agent_docs.items():
             Text.write(Path("specs") / self.spec / f"{saved_stage}.md", content)
 
-        Text.write(self.feedback.feedback_file, feedback)
+        self.feedback.write(last_written_stage_text)
+        self.history.write_revisions(history_folder_contents)
 
         self.status.update_stage(stage)
         self.status.update_revision()
@@ -338,14 +392,15 @@ def end_subagent_turn(spec: str) -> dict[str, Any]:
 
         return {
             "status": "return",
-            "message": "Sub-agent requested return to an earlier stage. Stop immediately and notify user.",
+            "message": "You have requested return to an earlier stage. Stop immediately and notify orchestrator of this decision, and tell it to check the spec status.",
         }
-
-    agent_data_manager.advance_stage()
+    
+    if result == "success":
+        agent_data_manager.advance_stage()
 
     return {
         "status": "success",
-        "message": "Sub-agent successfully completed its turn.",
+        "message": "Notify orchestrator of successful completion of sub-agent turn, and tell it to check the spec status for the next active agent.",
     }
 
 
@@ -368,6 +423,8 @@ def main() -> None:
         verify_spec_exists(spec)
 
         if args.command == "begin":
+            if (parse_spec_from_prompt(prompt) is None):
+                return
             result = begin_agent(spec)
         elif args.command == "subagent":
             result = end_subagent_turn(spec)
@@ -382,6 +439,8 @@ def main() -> None:
         }
 
     print(json.dumps(result, indent=2))
+    with open(".tddctl-last-result.json", "w", encoding="utf-8") as f:
+        json.dump(result, f, indent=2)
 
 
 if __name__ == "__main__":

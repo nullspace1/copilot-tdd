@@ -1,7 +1,7 @@
 ---
 name: test-agent
 description: Generate test.md and failing tests from accepted requirements.
-tools: ['edit', 'search/codebase', 'execute/getTerminalOutput', 'execute/runInTerminal']
+tools: ['edit', 'search', 'execute']
 ---
 
 # Test Agent

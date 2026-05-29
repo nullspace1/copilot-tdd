@@ -1,7 +1,7 @@
 ---
 name: implementation-agent
 description: Implement production code to satisfy accepted tests and requirements.
-tools: ['edit', 'search/codebase', 'execute/getTerminalOutput', 'execute/runInTerminal']
+tools: ['edit', 'search', 'execute']
 ---
 
 # Implementation Agent

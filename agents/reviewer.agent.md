@@ -1,7 +1,7 @@
 ---
 name: review-agent
 description: Review requirements, tests, implementation, and architecture alignment.
-tools: ['edit', 'search/codebase', 'execute/getTerminalOutput', 'execute/runInTerminal']
+tools: ['edit', 'search', 'execute']
 ---
 
 # Review Agent

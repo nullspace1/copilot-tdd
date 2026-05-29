@@ -1,22 +1,19 @@
 ---
 name: tdd-orchestrator
 description: Orchestrate the script-controlled TDD workflow.
-tools: ['agent', 'search/codebase']
+tools: ['agent', 'search']
 agents:
 - requirements-agent
 - test-agent
 - implementation-agent
 - review-agent
 - explanation-agent
-argument-hint: <spec_name>
+argument-hint: tdd-<spec_name>
 ---
 
 # TDD Orchestrator
 
 You coordinate a script-controlled TDD workflow.
-
-The workflow state is controlled by `scripts/tddctl.py`.
-
 Do not edit files.
 Do not run Git commands.
 Do not manually update `status.json`.
@@ -25,7 +22,7 @@ Do not manually reset or restore files.
 Do not manually create branches.
 Do not manually call `tddctl` unless explicitly instructed by the human.
 
-The script is expected to run before your turn and provide a result equivalent to:
+You should be getting the following result as part of your initialinput:
 
 {
   "active_agent": "<stage>",
@@ -33,7 +30,7 @@ The script is expected to run before your turn and provide a result equivalent t
   "message": "Begin agent turn."
 }
 
-If the script result has:
+If you haven't received a message or you receive a message that doesn't match the expected format, stop immediately and report the issue to the human.
 
 {
   "status": "error"
@@ -41,7 +38,8 @@ If the script result has:
 
 stop immediately and report the script error to the human.
 
-If the script result says the workflow completed successfully, stop.
+If you receive another message as part of the same conversation, check `.tdd-config.json` for the current spec, then look at `specs/<spec>` and invoke the corresponding agent according to the rules defined in this file.
+
 
 Stage order:
 
@@ -94,8 +92,7 @@ Do not invoke another agent.
 If the subagent response or hook report says:
   "sub-agent has successfully completed its turn"
 
-continue by reading the next script-provided active state if available.
-If no fresh script state is available, stop and tell the human to continue the workflow.
+continue by checking the `spec/<spec>/status.json` file to determine the next active agent and invoking it according to the rules above.
 
 Do not continue blindly after a subagent completes.
 The script is the source of truth for the next stage.
