@@ -1,8 +1,8 @@
 
 from typing import TypedDict
 
-import scripts.src.file as file
-import scripts.src.status as status
+import src.file as file
+import src.status as status
 
 
 class TDDIteration(TypedDict):

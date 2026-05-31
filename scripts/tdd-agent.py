@@ -1,10 +1,10 @@
 
 
-from scripts.src import git
-import scripts.src.print as print_module
-import scripts.src.spec as spec
-import scripts.src.status as status
-import scripts.src.tdd_state as tdd_state
+from src import git
+import src.print as print_module
+import src.spec as spec
+import src.status as status
+import src.tdd_state as tdd_state
 
 
 

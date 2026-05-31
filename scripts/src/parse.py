@@ -1,7 +1,7 @@
 import json
+from os import mkdir
 import re
 import sys
-from typing import Any
 
 NEW_SPEC_REGEX = re.compile(r"tdd-+([a-zA-Z0-9-]+)")
 
@@ -15,9 +15,14 @@ def load_prompt() -> str:
     if raw == "":
         return ""
 
-    return json.loads(raw)["prompt"]
+    message = json.loads(raw)["prompt"]
+
+    return message
 
 
-def new_spec(prompt: str) -> bool:
+def is_new_spec(prompt: str) -> bool:
     match = NEW_SPEC_REGEX.search(prompt)
     return match is not None
+
+def parse_spec(prompt: str) -> str:
+    return prompt.split("tdd-")[-1].strip()

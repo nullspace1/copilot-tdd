@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from scripts.src.file import write
+from src.file import write
 
 
 def log(string: str) -> None:

@@ -1,5 +1,5 @@
 import subprocess
-import log
+import src.log as log
 
 
 class GitError(Exception):

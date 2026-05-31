@@ -1,24 +1,31 @@
 
+from csv import Error
+
 import src.git as git
 import src.parse as parse
 import src.print as print_module
 import src.spec as spec
 import src.status as status
+import src.config as config
 
 
 def main() -> None:
     
-    prompt : str = parse.load_prompt()
+    prompt : str  = parse.load_prompt()
     
-    if (parse.new_spec(prompt)):
+    if (parse.is_new_spec(prompt)):
+        
+        prompt = parse.parse_spec(prompt)
+        
+        config.save({"spec": prompt})
         
         try:
             spec.create_spec(prompt)
-        except git.GitError as error:
+        except Exception as error:
             print_module.print_prompt({
                 "status": "error",
-                "git_error_message": error.stderr,
-                "message": f"Error creating spec {prompt}. Warn user and provide a guide on how to restore git state."
+                "error_message": str(error),
+                "message": f"Error creating spec {prompt}. Warn user and provide a guide on how to restore state."
             })
             return
           

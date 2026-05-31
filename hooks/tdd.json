@@ -1,6 +1,6 @@
 {
   "hooks": {
-    "SessionStart": [
+    "UserPromptSubmit": [
       {
         "type": "command",
         "command": "python .github/scripts/tdd-new.py",

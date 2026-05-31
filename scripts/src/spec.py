@@ -4,10 +4,10 @@ from typing import Any
 
 from griffe import GitError
 
-import scripts.src.file as file
-import scripts.src.git as git
-import scripts.src.status as status
-from scripts.src import config
+import src.file as file
+import src.git as git
+import src.status as status
+from src import config
 
 def create_spec(spec : str) -> None:
     

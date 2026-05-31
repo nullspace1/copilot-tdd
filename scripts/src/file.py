@@ -2,7 +2,8 @@ from pathlib import Path
 
 
 def write(path: Path, content: str) -> None:
-    path.write_text(content, encoding="utf-8")
+    with path.open("w") as f:
+        f.write(content)
     
 def read(path: Path) -> str:
     return path.read_text(encoding="utf-8")
