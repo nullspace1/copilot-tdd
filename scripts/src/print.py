@@ -9,3 +9,4 @@ def print_prompt(data : dict[str, Any]) -> None:
         "additionalContext": json.dumps(data)
         }
     }
+    print(json.dumps(data))
