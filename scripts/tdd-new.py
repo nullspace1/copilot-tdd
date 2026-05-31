@@ -1,9 +1,9 @@
 
-import scripts.src.git as git
-import scripts.src.parse as parse
-import scripts.src.print as print_module
-import scripts.src.spec as spec
-import scripts.src.status as status
+import src.git as git
+import src.parse as parse
+import src.print as print_module
+import src.spec as spec
+import src.status as status
 
 
 def main() -> None:

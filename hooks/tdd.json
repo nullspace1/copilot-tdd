@@ -3,14 +3,14 @@
     "SessionStart": [
       {
         "type": "command",
-        "command": "python .github/tdd-new.py",
+        "command": "python .github/scripts/tdd-new.py",
         "timeout": 30
       }
     ],
     "SubagentStop": [
       {
         "type": "command",
-        "command": "python .github/tdd-agent.py",
+        "command": "python .github/scripts/tdd-agent.py",
         "timeout": 60
       }
     ]
