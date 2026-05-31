@@ -2,8 +2,6 @@ import json
 from pathlib import Path
 from typing import Any
 
-from griffe import GitError
-
 import src.file as file
 import src.git as git
 import src.status as status
@@ -19,11 +17,11 @@ def create_spec(spec : str) -> None:
     file.opt_write(file.spec_path(spec,"status.json"), status.dump(status.initial_status(spec)))
     
     if (git.uncommitted_changes()):
-        raise GitError("There are uncommitted changes."
+        raise git.GitError("There are uncommitted changes."
                        "Please commit them before creating a new spec.")
     
     if (git.current_branch() != "master"):
-        raise GitError("Not on main branch.")
+        raise git.GitError("Not on main branch.")
     
     if (git.branch_exists(f"tdd/{spec}")):
         git.delete_branch(f"tdd/{spec}")

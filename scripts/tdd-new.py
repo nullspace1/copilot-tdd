@@ -7,6 +7,7 @@ import src.print as print_module
 import src.spec as spec
 import src.status as status
 import src.config as config
+import src.log as log
 
 
 def main() -> None:
@@ -21,10 +22,11 @@ def main() -> None:
         
         try:
             spec.create_spec(prompt)
-        except Exception as error:
+        except git.GitError as error:
+            log.log("git " + " ".join(error.args) + "\nerr: " + error.stderr)
             print_module.print_prompt({
                 "status": "error",
-                "error_message": str(error),
+                "error_message": error.stderr,
                 "message": f"Error creating spec {prompt}. Warn user and provide a guide on how to restore state."
             })
             return
