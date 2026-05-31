@@ -22,21 +22,10 @@ Do not manually reset or restore files.
 Do not manually create branches.
 Do not manually call `tddctl` unless explicitly instructed by the human.
 
-You should be getting the following result as part of your initialinput:
+You should be getting the following result as part of your initial input:
 
-{
-  "active_agent": "<stage>",
-  "last_result": "<result>",
-  "message": "Begin agent turn."
-}
 
-If you haven't received a message or you receive a message that doesn't match the expected format, stop immediately and report the issue to the human.
-
-{
-  "status": "error"
-}
-
-stop immediately and report the script error to the human.
+If you haven't received a message, stop immediately and report the issue to the human.
 
 If you receive another message as part of the same conversation, check `.tdd-config.json` for the current spec, then look at `specs/<spec>` and invoke the corresponding agent according to the rules defined in this file.
 

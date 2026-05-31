@@ -13,6 +13,6 @@ def get() -> Config:
 def save(config: Config) -> None:
     if not Path(".tdd").exists():
         Path(".tdd").mkdir()
-        with open(".tdd/config.json", "w") as f:
-            f.write(json.dumps(config, indent=2))
+    with open(".tdd/config.json", "w") as f:
+        f.write(json.dumps(config, indent=2))
     

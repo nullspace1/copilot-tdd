@@ -25,7 +25,6 @@ def create_spec(spec : str) -> None:
     
     if (git.branch_exists(f"tdd/{spec}")):
         git.delete_branch(f"tdd/{spec}")
-        
     git.create_branch(f"tdd/{spec}")
     git.add(".")
     git.save_ref(f"refs/tdd/{spec}/start", git.commit(f"tdd({spec}) : start workflow"))
