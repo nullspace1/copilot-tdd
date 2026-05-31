@@ -20,10 +20,10 @@ def git(*args: str) -> str:
     log.log("git " + " ".join(args) + "\nout:" + result.stdout)
     log.log("git " + " ".join(args) + "\nerr: " + result.stderr)
     
-    if result.returncode != 0:
+    if result.returncode != 0 and result.stderr != "":
         raise GitError(result.stderr)
     
-    return result.stdout
+    return result.stdout.strip()
 
 def switch_branch(branch: str) -> str:
     return git("switch", branch)

@@ -23,7 +23,7 @@ def main() -> None:
         try:
             spec.create_spec(prompt)
         except git.GitError as error:
-            log.log("git " + " ".join(error.args) + "\nerr: " + error.stderr)
+            log.log("git error:" + error.stderr)
             print_module.print_prompt({
                 "status": "error",
                 "error_message": error.stderr,
@@ -41,14 +41,13 @@ def main() -> None:
     else: 
         
         spec_name = spec.spec_from_config()
-        status_data = status.current_status(prompt)
-        
+        status_data = status.current_status(spec_name)
         
         if status.status_ended(status_data):
             print_module.print_prompt({
                 "spec": spec_name,
                 "status": "success",
-                "message": f"Spec {prompt} has been completed successfully. Please notify user."
+                "message": f"Spec {spec_name} has been completed successfully. Please notify user."
             })
         
         print_module.print_prompt({
