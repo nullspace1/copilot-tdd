@@ -1,0 +1,27 @@
+from pathlib import Path
+
+
+def write(path: Path, content: str) -> None:
+    path.write_text(content, encoding="utf-8")
+    
+def read(path: Path) -> str:
+    return path.read_text(encoding="utf-8")
+
+def read_optional(path: Path) -> str | None:
+    if not path.exists():
+        return None
+        
+    return path.read_text(encoding="utf-8")
+
+def opt_write(path: Path, content: str) -> None:
+    if not path.exists():
+        write(path, content)
+        
+def write_if_content(path: Path, content: str | None) -> None:
+    if content:
+        write(path, content)
+        
+def spec_path(spec: str, filename: str) -> Path:
+    return Path("specs") / spec / filename
+
+
