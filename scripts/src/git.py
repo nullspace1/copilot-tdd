@@ -1,5 +1,5 @@
 import subprocess
-from typing import TypedDict
+import log
 
 
 class GitError(Exception):
@@ -8,6 +8,7 @@ class GitError(Exception):
         self.stderr = stderr
 
 def git(*args: str) -> str:
+    
     result = subprocess.run(
             ["git", *args],
             text=True,
@@ -15,6 +16,8 @@ def git(*args: str) -> str:
             stderr=subprocess.PIPE,
             check=False,
         )
+    
+    log.log("git " + " ".join(args) + "\n ---" + result.stdout)
     
     if result.returncode != 0:
         raise GitError(result.stderr)
