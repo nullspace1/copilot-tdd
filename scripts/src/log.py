@@ -1,7 +1,6 @@
 from pathlib import Path
 
-from src.file import write
-
+import src.file as file
 
 def log(string: str) -> None:
-    write(path=Path(".tdd/log.txt"), content=f"{string}\n")
+    file.append(path=Path(".tdd/log.txt"), content=f"{string}\n")

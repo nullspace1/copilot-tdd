@@ -17,7 +17,8 @@ def git(*args: str) -> str:
             check=False,
         )
     
-    log.log("git " + " ".join(args) + "\n ---" + result.stdout)
+    log.log("git " + " ".join(args) + "\nout:" + result.stdout)
+    log.log("git " + " ".join(args) + "\nerr: " + result.stderr)
     
     if result.returncode != 0:
         raise GitError(result.stderr)
