@@ -22,7 +22,7 @@ You may read:
   architecture.md
   specs/<spec>/spec.md
   specs/<spec>/requirements.md
-  specs/<spec>/test.md
+  specs/<spec>/test_scenarios.md
   specs/<spec>/implementation.md
   specs/<spec>/feedback.md
   specs/<spec>/status.json
@@ -33,12 +33,17 @@ You may read:
   relevant config files
   relevant migrations
 
+`status.json` workflow rule:
+
+  - `stage` must be one of: `requirements`, `test`, `implementation`, `review`, `explanation`, `end`.
+  - `result` must be one of: `start`, `read_feedback`, `progress`, `success`, `return[requirements]`, `return[test]`, `return[implementation]`, `return[review]`, `return[explanation]`.
+
 You must not edit:
 
   architecture.md
   specs/<spec>/spec.md
   specs/<spec>/requirements.md
-  specs/<spec>/test.md
+  specs/<spec>/test_scenarios.md
   specs/<spec>/implementation.md
   specs/<spec>/explanation.md
   specs/<spec>/feedback.md
@@ -63,8 +68,8 @@ Success behavior:
   If the workflow passes review:
 
   1. Write or update `specs/<spec>/review.md`.
-  2. Set `specs/<spec>/status.json.result` to `"success"`.
-  3. Do not change `status.json.stage`.
+  2. Set `specs/<spec>/status.json.stage` to `"explanation"`.
+  3. Set `specs/<spec>/status.json.result` to `"progress"`.
   4. Do not change `status.json.revision`.
 
 Return behavior:
@@ -138,6 +143,11 @@ Rules:
   Prefer `return[implementation]` for code defects.
   Prefer `return[test]` for missing or defective tests.
   Prefer `return[requirements]` for unclear or wrong product behavior.
+
+Status update rule:
+
+  After finishing your turn, you must write `status.json` with one valid `result` from the allowed list above.
+  Do not invent new status values.
 
 Hook report rule:
 

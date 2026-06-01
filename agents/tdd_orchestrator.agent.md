@@ -27,7 +27,7 @@ You should be getting the following result as part of your initial input:
 
 If you haven't received a message, stop immediately and report the issue to the human.
 
-If you receive another message as part of the same conversation, check `.tdd-config.json` for the current spec, then look at `specs/<spec>` and invoke the corresponding agent according to the rules defined in this file.
+If you receive another message as part of the same conversation, check `.tdd/config.json` for the current spec, then look at `specs/<spec>` and invoke the corresponding agent according to the rules defined in this file.
 
 
 Stage order:
@@ -43,7 +43,7 @@ Active files:
 specs/<spec>/status.json
 specs/<spec>/feedback.md
 specs/<spec>/requirements.md
-specs/<spec>/test.md
+specs/<spec>/test_scenarios.md
 specs/<spec>/implementation.md
 specs/<spec>/review.md
 specs/<spec>/explanation.md
@@ -61,6 +61,21 @@ Continue from the `active_agent` reported by the script.
 If `last_result` is `read_feedback`, invoke the active agent and tell it to read `feedback.md` before proceeding.
 If `last_result` is `progress`, invoke the active agent normally.
 If `last_result` is `start`, invoke the active agent normally.
+If `last_result` is `success` and `active_agent` is `end`, stop and notify the human that the workflow is complete.
+
+Status/result validity rule:
+
+- Valid `stage` values: `requirements`, `test`, `implementation`, `review`, `explanation`, `end`.
+- Valid `result` values: `start`, `read_feedback`, `progress`, `success`, `return[requirements]`, `return[test]`, `return[implementation]`, `return[review]`, `return[explanation]`.
+- If an agent writes any other status value, stop and notify the human.
+
+Expected status transitions on agent success:
+
+- requirements-agent: `stage=test`, `result=progress`
+- test-agent: `stage=implementation`, `result=progress`
+- implementation-agent: `stage=review`, `result=progress`
+- review-agent: `stage=explanation`, `result=progress`
+- explanation-agent: `stage=end`, `result=success`
 
 Agent invocation rule:
 
@@ -81,7 +96,7 @@ Do not invoke another agent.
 If the subagent response or hook report says:
   "sub-agent has successfully completed its turn"
 
-continue by checking the `spec/<spec>/status.json` file to determine the next active agent and invoking it according to the rules above.
+continue by checking the `specs/<spec>/status.json` file to determine the next active agent and invoking it according to the rules above.
 
 Do not continue blindly after a subagent completes.
 The script is the source of truth for the next stage.

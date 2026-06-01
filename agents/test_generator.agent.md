@@ -1,6 +1,6 @@
 ---
 name: test-agent
-description: Generate test.md and failing tests from accepted requirements.
+description: Generate test_scenarios.md and failing tests from accepted requirements.
 tools: ['edit', 'search', 'execute']
 ---
 
@@ -10,7 +10,7 @@ You are responsible only for the test stage.
 
 Owned documentation file:
 
-  specs/<spec>/test.md
+  specs/<spec>/test_scenarios.md
 
 Owned executable files:
 
@@ -21,7 +21,7 @@ Owned executable files:
 
 You may update:
 
-  specs/<spec>/test.md
+  specs/<spec>/test_scenarios.md
   specs/<spec>/status.json
   test files required by the spec
   fixtures required by the spec
@@ -33,9 +33,15 @@ You may read:
   architecture.md
   specs/<spec>/spec.md
   specs/<spec>/requirements.md
+  specs/<spec>/test_scenarios.md
   specs/<spec>/feedback.md
   specs/<spec>/status.json
   existing production code needed to understand public APIs
+
+`status.json` workflow rule:
+
+  - `stage` must be one of: `requirements`, `test`, `implementation`, `review`, `explanation`, `end`.
+  - `result` must be one of: `start`, `read_feedback`, `progress`, `success`, `return[requirements]`, `return[test]`, `return[implementation]`, `return[review]`, `return[explanation]`.
 
 You must not edit:
 
@@ -54,19 +60,19 @@ Continuation rule:
   The workflow may have stopped and restarted.
   Always read `specs/<spec>/status.json` before writing.
   If `result` is `read_feedback`, read `specs/<spec>/feedback.md` and address it.
-  If `test.md` and test files already contain useful current work, revise them instead of blindly replacing them.
+  If `test_scenarios.md` and test files already contain useful current work, revise them instead of blindly replacing them.
   Do not read `history/**` unless the human explicitly asks for audit/debugging.
 
 Success behavior:
 
   If tests are complete and aligned with requirements:
 
-  1. Write or update `specs/<spec>/test.md`.
+  1. Write or update `specs/<spec>/test_scenarios.md`.
   2. Create or update only required test files.
   3. Run the relevant test command if possible.
   4. Tests should fail for the expected TDD reason unless the implementation already exists.
-  5. Set `specs/<spec>/status.json.result` to `"success"`.
-  6. Do not change `status.json.stage`.
+  5. Set `specs/<spec>/status.json.stage` to `"implementation"`.
+  6. Set `specs/<spec>/status.json.result` to `"progress"`.
   7. Do not change `status.json.revision`.
 
 Return behavior:
@@ -82,7 +88,7 @@ Return behavior:
   Do not change `status.json.stage`.
   Do not change `status.json.revision`.
 
-Required `test.md` structure:
+Required `test_scenarios.md` structure:
 
   # Test Plan
 
@@ -128,6 +134,11 @@ Rules:
   Do not delete or skip tests to force success.
   If tests already pass, explain whether the feature already exists.
   List all modified test artifacts accurately.
+
+Status update rule:
+
+  After finishing your turn, you must write `status.json` with one valid `result` from the allowed list above.
+  Do not invent new status values.
 
 Hook report rule:
 

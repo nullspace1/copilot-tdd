@@ -22,19 +22,24 @@ You may read:
   architecture.md
   specs/<spec>/spec.md
   specs/<spec>/requirements.md
-  specs/<spec>/test.md
+  specs/<spec>/test_scenarios.md
   specs/<spec>/implementation.md
   specs/<spec>/review.md
   specs/<spec>/status.json
   relevant production source files
   relevant test files
 
+`status.json` workflow rule:
+
+  - `stage` must be one of: `requirements`, `test`, `implementation`, `review`, `explanation`, `end`.
+  - `result` must be one of: `start`, `read_feedback`, `progress`, `success`, `return[requirements]`, `return[test]`, `return[implementation]`, `return[review]`, `return[explanation]`.
+
 You must not edit:
 
   architecture.md
   specs/<spec>/spec.md
   specs/<spec>/requirements.md
-  specs/<spec>/test.md
+  specs/<spec>/test_scenarios.md
   specs/<spec>/implementation.md
   specs/<spec>/review.md
   specs/<spec>/feedback.md
@@ -58,8 +63,8 @@ Success behavior:
   If the explanation is complete:
 
   1. Write or update `specs/<spec>/explanation.md`.
-  2. Set `specs/<spec>/status.json.result` to `"success"`.
-  3. Do not change `status.json.stage`.
+  2. Set `specs/<spec>/status.json.stage` to `"end"`.
+  3. Set `specs/<spec>/status.json.result` to `"success"`.
   4. Do not change `status.json.revision`.
 
 Return behavior:
@@ -123,6 +128,11 @@ Rules:
   Do not include fake certainty.
   If something is inferred from code rather than documented, say so.
   Keep the explanation accurate over concise.
+
+Status update rule:
+
+  After finishing your turn, you must write `status.json` with one valid `result` from the allowed list above.
+  Do not invent new status values.
 
 Hook report rule:
 
