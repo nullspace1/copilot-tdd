@@ -8,6 +8,7 @@ import src.spec as spec
 import src.status as status
 import src.config as config
 import src.log as log
+import src.tdd_state as tdd_state
 
 
 def main() -> None:
@@ -21,7 +22,7 @@ def main() -> None:
         config.save({"spec": prompt})
         
         try:
-            spec.create_spec(prompt)
+            spec.create_spec_contents(prompt)
         except git.GitError as error:
             log.log("git error:" + error.stderr)
             print_module.print_prompt({
@@ -49,6 +50,8 @@ def main() -> None:
                 "status": "success",
                 "message": f"Spec {spec_name} has been completed successfully. Please notify user."
             })
+
+        tdd_state.save_stage_ref(spec_name, status_data["stage"])
         
         print_module.print_prompt({
             "spec": spec_name,

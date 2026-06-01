@@ -31,23 +31,18 @@ You may read:
   architecture.md
   specs/<spec>/spec.md
   specs/<spec>/requirements.md
-  specs/<spec>/test_scenarios.md
+  specs/<spec>/test.md
   specs/<spec>/feedback.md
   specs/<spec>/status.json
   test files
   existing production source files
-
-`status.json` workflow rule:
-
-  - `stage` must be one of: `requirements`, `test`, `implementation`, `review`, `explanation`, `end`.
-  - `result` must be one of: `start`, `read_feedback`, `progress`, `success`, `return[requirements]`, `return[test]`, `return[implementation]`, `return[review]`, `return[explanation]`.
 
 You must not edit:
 
   architecture.md
   specs/<spec>/spec.md
   specs/<spec>/requirements.md
-  specs/<spec>/test_scenarios.md
+  specs/<spec>/test.md
   specs/<spec>/review.md
   specs/<spec>/explanation.md
   specs/<spec>/feedback.md
@@ -72,8 +67,8 @@ Success behavior:
   2. Write or update `specs/<spec>/implementation.md`.
   3. Run relevant tests if possible.
   4. Ensure accepted tests pass unless the environment prevents execution.
-  5. Set `specs/<spec>/status.json.stage` to `"review"`.
-  6. Set `specs/<spec>/status.json.result` to `"progress"`.
+  5. Set `specs/<spec>/status.json.result` to `"success"`.
+  6. Do not change `status.json.stage`.
   7. Do not change `status.json.revision`.
 
 Return behavior:
@@ -136,11 +131,6 @@ Rules:
   Do not claim tests passed unless they were actually run.
   Preserve public contracts unless requirements explicitly change them.
   List all modified production artifacts accurately.
-
-Status update rule:
-
-  After finishing your turn, you must write `status.json` with one valid `result` from the allowed list above.
-  Do not invent new status values.
 
 Hook report rule:
 

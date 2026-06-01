@@ -97,11 +97,11 @@ Load current status from specs/<spec>/status.json
     │         │
     │         ▼
     │    Create preservation branch:
-    │    feat/<spec>-revision-<n>
+    │    tdd/<spec>-revision-<n>
     │    Commit: "tdd(<spec>): preserve revision <n>"
     │         │
     │         ▼
-    │    Switch back to feat/<spec>
+    │    Switch back to tdd/<spec>
     │    Hard reset to: refs/tdd/<spec>/<target-stage>
     │    Commit: "tdd(<spec>): return to <stage>"
     │         │
@@ -155,10 +155,10 @@ A `return[<stage>]` result triggers the rollback in `tdd-agent.py`, resetting ba
 
 | Ref | Purpose |
 |---|---|
-| `refs/tdd/<spec>/start` | Initial commit when the spec was created |
-| `refs/tdd/<spec>/<stage>` | Saved commit after each stage completes |
-| `feat/<spec>` | Active working branch for the spec |
-| `feat/<spec>-revision-<n>` | Preservation branch created before each rollback |
+| `refs/tdd/<spec>-start` | Initial commit when the spec was created |
+| `refs/tdd/<spec>-<stage>` | Saved commit after each stage completes |
+| `tdd/<spec>` | Active working branch for the spec |
+| `tdd/<spec>-revision-<n>` | Preservation branch created before each rollback |
 
 ---
 

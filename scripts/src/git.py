@@ -48,6 +48,9 @@ def commit(message: str) -> str:
 def reset_hard(ref: str) -> str:
     return git("reset", "--hard", ref)
     
+def get_hash() -> str:
+    return git("rev-parse", "HEAD")
+
 def uncommitted_changes() -> bool:
     return git("diff-index", "--quiet", "HEAD") != ""
 

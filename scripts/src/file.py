@@ -2,6 +2,7 @@ from pathlib import Path
 
 
 def write(path: Path, content: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w") as f:
         f.write(content)
         

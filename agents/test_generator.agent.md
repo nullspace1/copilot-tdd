@@ -27,6 +27,9 @@ You may update:
   fixtures required by the spec
   snapshots required by the spec
   test helpers required by the spec
+  config files
+
+You may install test dependencies if required by the spec and not already present.
 
 You may read:
 
@@ -53,7 +56,6 @@ You must not edit:
   specs/<spec>/explanation.md
   specs/<spec>/feedback.md
   specs/<spec>/history/**
-  production source files
 
 Continuation rule:
 
@@ -68,7 +70,7 @@ Success behavior:
   If tests are complete and aligned with requirements:
 
   1. Write or update `specs/<spec>/test_scenarios.md`.
-  2. Create or update only required test files.
+  2. Create or update only required test files. Update existing files only if they already contain relevant work or are necessary to implement new tests. Do not modify unrelated tests in the same file.
   3. Run the relevant test command if possible.
   4. Tests should fail for the expected TDD reason unless the implementation already exists.
   5. Set `specs/<spec>/status.json.stage` to `"implementation"`.

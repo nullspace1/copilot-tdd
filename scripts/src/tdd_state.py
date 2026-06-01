@@ -3,6 +3,7 @@ from typing import TypedDict
 
 import src.file as file
 import src.status as status
+import src.git as git
 
 
 class TDDIteration(TypedDict):
@@ -51,6 +52,14 @@ def copy_tdd_state(spec: str) -> TDDState:
         "revision": revision_number["revision"],
         "history": copy_history_files(spec, revision_number["revision"])
     }
+
+def add_iteration_to_history(spec: str, state: TDDState) -> TDDState:
+    
+    revision = state["revision"]
+    
+    state["history"].append(state["iteration"])
+
+    return state
     
 def paste_tdd_state(spec: str, state: TDDState) -> None:
     
@@ -70,3 +79,17 @@ def paste_tdd_state(spec: str, state: TDDState) -> None:
 def add_feedback_from(spec: str, stage: str, state: TDDState) -> None:
     
     file.write(file.spec_path(spec, "feedback.md"), state["iteration"][f"{stage}_file"])
+
+def commit_stage(spec: str, stage: str, message: str) -> None:
+    
+    git.add(".")
+    hash = git.commit(message)
+    git.save_ref(f"refs/tdd/{spec}-{stage}", hash)
+
+def save_stage_ref(spec: str, stage: str) -> None:
+    hash = git.get_hash()
+    git.save_ref(f"refs/tdd/{spec}-{stage}", hash)
+
+def reset_to_stage(spec: str, stage: str) -> None:
+
+    git.reset_hard(f"refs/tdd/{spec}-{stage}")
