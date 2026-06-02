@@ -9,7 +9,7 @@ import src.git as git
 class TDDIteration(TypedDict):
     
     requirements_file: str | None
-    test_scenarios_file: str | None
+    test_file: str | None
     implementation_file: str | None
     review_file: str | None
 
@@ -30,7 +30,7 @@ def copy_history_files(spec: str, revision: int) -> list[TDDIteration]:
         history.append(
             {
                 "requirements_file": file.read_optional(file.spec_path(spec, f"history/revision-{i + 1}/requirements.md")),
-                "test_scenarios_file": file.read_optional(file.spec_path(spec, f"history/revision-{i + 1}/test_scenarios.md")),
+                "test_file": file.read_optional(file.spec_path(spec, f"history/revision-{i + 1}/test_scenarios.md")),
                 "implementation_file": file.read_optional(file.spec_path(spec, f"history/revision-{i + 1}/implementation.md")),
                 "review_file": file.read_optional(file.spec_path(spec, f"history/revision-{i + 1}/review.md"))
             }
@@ -45,13 +45,14 @@ def copy_tdd_state(spec: str) -> TDDState:
     return {
         "iteration": {
             "requirements_file": file.read_optional(file.spec_path(spec, "requirements.md")),
-            "test_scenarios_file": file.read_optional(file.spec_path(spec, "test_scenarios.md")),
+            "test_file": file.read_optional(file.spec_path(spec, "test_scenarios.md")),
             "implementation_file": file.read_optional(file.spec_path(spec, "implementation.md")),
             "review_file": file.read_optional(file.spec_path(spec, "review.md"))
         },
         "revision": revision_number["revision"],
         "history": copy_history_files(spec, revision_number["revision"])
     }
+
 
 def add_iteration_to_history(spec: str, state: TDDState) -> TDDState:
     
@@ -64,13 +65,13 @@ def add_iteration_to_history(spec: str, state: TDDState) -> TDDState:
 def paste_tdd_state(spec: str, state: TDDState) -> None:
     
     file.write_if_content(file.spec_path(spec, "requirements.md"), state["iteration"]["requirements_file"])
-    file.write_if_content(file.spec_path(spec, "test_scenarios.md"), state["iteration"]["test_scenarios_file"])
+    file.write_if_content(file.spec_path(spec, "test_scenarios.md"), state["iteration"]["test_file"])
     file.write_if_content(file.spec_path(spec, "implementation.md"), state["iteration"]["implementation_file"])
     file.write_if_content(file.spec_path(spec, "review.md"), state["iteration"]["review_file"])
     
     for i in range(len(state["history"])):
         file.write_if_content(file.spec_path(spec, f"history/revision-{i + 1}/requirements.md"), state["history"][i]["requirements_file"])
-        file.write_if_content(file.spec_path(spec, f"history/revision-{i + 1}/test_scenarios.md"), state["history"][i]["test_scenarios_file"])
+        file.write_if_content(file.spec_path(spec, f"history/revision-{i + 1}/test_scenarios.md"), state["history"][i]["test_file"])
         file.write_if_content(file.spec_path(spec, f"history/revision-{i + 1}/implementation.md"), state["history"][i]["implementation_file"])
         file.write_if_content(file.spec_path(spec, f"history/revision-{i + 1}/review.md"), state["history"][i]["review_file"])
         

@@ -18,6 +18,19 @@ def status(stage : Stage, result: Result, revision: int) -> StatusData:
         "result": result,
         "revision": revision
     }
+
+def next_stage(current_status: StatusData) -> Stage:
+    
+    stage_order : list[Stage] = ["requirements", "test", "implementation", "review", "explanation", "end"]
+    
+    try:
+        current_index = stage_order.index(current_status["stage"])
+        if current_index < len(stage_order) - 1:
+            return stage_order[current_index + 1]
+        else:
+            return "end"
+    except ValueError:
+        raise ValueError(f"Invalid stage: {current_status['stage']}")
     
 def current_status(spec: str) -> StatusData:
     status_file = Path("specs") / spec / "status.json"

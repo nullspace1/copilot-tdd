@@ -64,8 +64,9 @@ def main():
                 }
             )
 
+        new_status = status.next_stage(current_status_data)
+        status.write_status(spec_name, status.status(new_status, "start", current_status_data["revision"]))
         
-
         tdd_state.commit_stage(spec_name, current_status_data['stage'], f"tdd({spec_name}): starting {current_status_data['stage']} stage")
    
         print_module.print_prompt(
